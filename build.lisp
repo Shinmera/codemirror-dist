@@ -76,10 +76,6 @@
                                        :defaults target)))
     (rm-r lib-dir)))
 
-(defun switch-branch (branch)
-  (status "Switching branch to ~a" branch)
-  (legit:git-checkout :branch branch))
-
 (defun clean-all (target)
   (status "Cleaning out all artefacts in ~a"  target)
   (mapcar #'rm-r (remove ".git" (directory (merge-pathnames "*.*" target))
@@ -94,8 +90,15 @@
   (flatten-modes target)
   (move-lib target))
 
-(defun main ()
-  (switch-branch "master")
-  (dist *here*))
+(defun main (&optional (target *here*))
+  (let ((repo (make-instance 'legit:repository :location target)))
+    (status "Checking out master")
+    (legit:checkout repo "master")
+    (dist target)
+    (status "Committing changes")
+    (legit:add repo :all)
+    (legit:commit repo "Updated.")
+    (status "Pushing changes")
+    (legit:push repo)))
 
 (main)
