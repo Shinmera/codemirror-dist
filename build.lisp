@@ -1,4 +1,4 @@
-(ql:quickload '(drakma zip legit))
+#+quicklisp (ql:quickload '(drakma zip legit))
 #-quicklisp (mapcar #'asdf:load-system '(drakma zip legit))
 
 (defparameter *here* #.(uiop:pathname-directory-pathname
