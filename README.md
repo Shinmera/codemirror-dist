@@ -6,7 +6,7 @@ If you want to build the clean version yourself, proceed as follows:
 
 ```
 git clone -b build https://github.com/Shinmera/codemirror-dist
-sbcl --script build.lisp
+sbcl --load build.lisp --quit
 ```
 
 You'll need SBCL set up with Quicklisp.
