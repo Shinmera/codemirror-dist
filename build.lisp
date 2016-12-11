@@ -13,6 +13,10 @@
     (when (cdr dir)
       (car (last dir)))))
 
+(defun ends-with (end string)
+  (and (<= (length end) (length string))
+       (string= end string :start2 (- (length string) (length end)))))
+
 (defun rm-r (target)
   (if (uiop:directory-pathname-p target)
       (uiop:delete-directory-tree target :validate (constantly T))
@@ -63,8 +67,9 @@
   (let ((mode-dir (merge-pathnames "mode/" target)))
     (status "Flattening modes in ~a" mode-dir)
     (dolist (mode (directory (make-pathname :type "js" :defaults (uiop:wilden mode-dir))))
-      (uiop:copy-file mode (make-pathname :name (pathname-name mode) :type "js"
-                                          :defaults mode-dir)))
+      (unless (ends-with "_test" (pathname-name mode))
+        (uiop:copy-file mode (make-pathname :name (pathname-name mode) :type "js"
+                                            :defaults mode-dir))))
     (mapcar #'rm-r (uiop:subdirectories mode-dir))))
 
 (defun move-lib (target)
