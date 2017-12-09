@@ -1,5 +1,5 @@
-#+quicklisp (ql:quickload '(drakma zip legit))
-#-quicklisp (mapcar #'asdf:load-system '(drakma zip legit))
+#+quicklisp (ql:quickload '(drakma zip legit cl-ppcre alexandria))
+#-quicklisp (mapcar #'asdf:load-system '(drakma zip legit cl-ppcre alexandria))
 
 (defparameter *here* #.(uiop:pathname-directory-pathname
                         (or *compile-file-pathname* *load-pathname* (uiop:getcwd))))
@@ -81,6 +81,30 @@
                                        :defaults target)))
     (rm-r lib-dir)))
 
+(defun find-mime-types (target)
+  (remove-duplicates
+   (loop for file in (directory (merge-pathnames (make-pathname :type "js" :name :wild :defaults uiop:*wild-inferiors*) target))
+         nconc (let ((list ()))
+                 (cl-ppcre:do-register-groups (mime) ("(?:def|defineMIME)\\(\"(\\w+/[\\w-]+)\""
+                                                      (alexandria:read-file-into-string file) list)
+                   (push (list mime file) list))))
+   :key #'car :test #'string=))
+
+(defun mime-type-to-name (mime)
+  (cl-ppcre:regex-replace "^\\w+/(x-)?" mime ""))
+
+(defun mime-type-table (mimes)
+  (let ((table (make-hash-table :test 'equal)))
+    (loop for mime in mimes
+          do (setf (gethash (mime-type-to-name (first mime)) table) mime))
+    (sort (alexandria:hash-table-alist table) #'string< :key #'car)))
+
+(defun write-mime-spec (target)
+  (with-open-file (out (merge-pathnames "mimes.txt" target)
+                       :direction :output :if-exists :supersede)
+    (loop for (name mime file) in (mime-type-table (find-mime-types target))
+          do (format out "~&~a ~a ~a" name mime (enough-namestring file (truename target))))))
+
 (defun clean-all (target)
   (status "Cleaning out all artefacts in ~a"  target)
   (mapcar #'rm-r (remove ".git" (directory (merge-pathnames "*.*" target))
@@ -93,7 +117,8 @@
            target :prefix "codemirror-")
   (strip target)
   (flatten-modes target)
-  (move-lib target))
+  (move-lib target)
+  (write-mime-spec target))
 
 (defun main (&optional (target *here*))
   (let ((repo (make-instance 'legit:repository :location target)))
