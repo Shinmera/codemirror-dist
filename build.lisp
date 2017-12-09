@@ -102,7 +102,7 @@
 (defun write-mime-spec (target)
   (with-open-file (out (merge-pathnames "mimes.txt" target)
                        :direction :output :if-exists :supersede)
-    (loop for (name mime file) in (mime-type-table (find-mime-types target))
+    (loop for (name mime file) in (mime-type-table (find-mime-types (merge-pathnames "mode/" target)))
           do (format out "~&~a ~a ~a" name mime (enough-namestring file (truename target))))))
 
 (defun clean-all (target)
