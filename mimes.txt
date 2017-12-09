@@ -87,7 +87,6 @@ pgp-signature application/pgp-signature mode/asciiarmor.js
 pgsql text/x-pgsql mode/sql.js
 php text/x-php mode/php.js
 pig text/x-pig mode/pig.js
-plain text/plain codemirror.js
 plsql text/x-plsql mode/sql.js
 properties text/x-properties mode/properties.js
 protobuf text/x-protobuf mode/protobuf.js
