@@ -83,11 +83,18 @@
 
 (defun find-mime-types (target)
   (remove-duplicates
-   (loop for file in (directory (merge-pathnames (make-pathname :type "js" :name :wild :defaults uiop:*wild-inferiors*) target))
-         nconc (let ((list ()))
-                 (cl-ppcre:do-register-groups (mime) ("(?:def|defineMIME)\\(\"(\\w+/[\\w-]+)\""
-                                                      (alexandria:read-file-into-string file) list)
-                   (push (list mime file) list))))
+   (list*
+    ;; Special handling for extraneous clike modes.
+    (list "text/x-c" "mode/clike.js")
+    (list "text/x-c++src" "mode/clike.js")
+    (list "text/x-c++hdr" "mode/clike.js")
+    (list "x-shader/x-vertex" "mode/clike.js")
+    (list "x-shader/x-fragment" "mode/clike.js")
+    (loop for file in (directory (merge-pathnames (make-pathname :type "js" :name :wild :defaults uiop:*wild-inferiors*) target))
+          nconc (let ((list ()))
+                  (cl-ppcre:do-register-groups (mime) ("(?:def|defineMIME)\\(\"(\\w+/[\\w-]+)\""
+                                                       (alexandria:read-file-into-string file) list)
+                    (push (list mime file) list)))))
    :key #'car :test #'string=))
 
 (defun mime-type-to-name (mime)
