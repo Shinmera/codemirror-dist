@@ -2,6 +2,9 @@ apl text/apl mode/apl.js
 aspx application/x-aspx mode/htmlembedded.js
 asterisk text/x-asterisk mode/asterisk.js
 brainfuck text/x-brainfuck mode/brainfuck.js
+c text/x-c mode/clike.js
+c++hdr text/x-c++hdr mode/clike.js
+c++src text/x-c++src mode/clike.js
 cassandra text/x-cassandra mode/sql.js
 ceylon text/x-ceylon mode/clike.js
 clojure text/x-clojure mode/clojure.js
@@ -36,6 +39,7 @@ fcl text/x-fcl mode/fcl.js
 feature text/x-feature mode/gherkin.js
 forth text/x-forth mode/forth.js
 fortran text/x-fortran mode/fortran.js
+fragment x-shader/x-fragment mode/clike.js
 gfm text/x-gfm mode/gfm.js
 go text/x-go mode/go.js
 gql text/x-gql mode/sql.js
@@ -132,6 +136,7 @@ vb text/x-vb mode/vb.js
 vbscript text/vbscript mode/vbscript.js
 velocity text/velocity mode/velocity.js
 verilog text/x-verilog mode/verilog.js
+vertex x-shader/x-vertex mode/clike.js
 vhdl text/x-vhdl mode/vhdl.js
 vue script/x-vue mode/vue.js
 webidl text/x-webidl mode/webidl.js
