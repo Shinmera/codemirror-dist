@@ -92,13 +92,13 @@
     (list "x-shader/x-fragment" "mode/clike.js")
     (loop for file in (directory (merge-pathnames (make-pathname :type "js" :name :wild :defaults uiop:*wild-inferiors*) target))
           nconc (let ((list ()))
-                  (cl-ppcre:do-register-groups (mime) ("(?:def|defineMIME)\\(\"(\\w+/[\\w-]+)\""
+                  (cl-ppcre:do-register-groups (mime) ("(?:def|defineMIME)\\(\"([\\w-]+/[\\w-]+)\""
                                                        (alexandria:read-file-into-string file) list)
                     (push (list mime file) list)))))
    :key #'car :test #'string=))
 
 (defun mime-type-to-name (mime)
-  (cl-ppcre:regex-replace "^\\w+/(x-)?" mime ""))
+  (cl-ppcre:regex-replace "^[\\w-]+/(x-)?" mime ""))
 
 (defun mime-type-table (mimes)
   (let ((table (make-hash-table :test 'equal)))
